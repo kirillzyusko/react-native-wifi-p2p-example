@@ -4,11 +4,13 @@
   "private": true,
   "scripts": {
     "start": "node node_modules/react-native/local-cli/cli.js start",
+    "build": "cd android && ./gradlew assembleRelease",
     "test": "jest"
   },
   "dependencies": {
     "react": "16.4.1",
-    "react-native": "0.56.0"
+    "react-native": "0.56.0",
+    "react-native-wifi-p2p": "github:kirikzyusko1996/react-native-wifi-p2p#master"
   },
   "devDependencies": {
     "babel-jest": "23.4.0",
