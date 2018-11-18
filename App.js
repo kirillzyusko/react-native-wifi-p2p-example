@@ -28,7 +28,9 @@ import {
   getAvailablePeers,
   sendFile,
   receiveFile,
-  getConnectionInfo
+  getConnectionInfo,
+  receiveMessage,
+  sendMessage
 } from 'react-native-wifi-p2p';
 import { PermissionsAndroid } from 'react-native';
 
@@ -146,6 +148,18 @@ export default class App extends Component<Props> {
         .catch(err => console.log('Error while file receiving', err))
   };
 
+  onSendMessage = () => {
+      sendMessage("Hello world!")
+        .then(() => console.log('Message sent successfully'))
+        .catch(err => console.log('Error while message sending', err));
+  };
+
+  onReceiveMessage = () => {
+      receiveMessage()
+          .then((msg) => console.log('Message received successfully', msg))
+          .catch(err => console.log('Error while message receiving', err))
+  };
+
   onGetConnectionInfo = () => {
     getConnectionInfo()
         .then(info => console.log(info));
@@ -193,6 +207,14 @@ export default class App extends Component<Props> {
         <Button
           title="Receive file"
           onPress={this.onReceiveFile}
+        />
+        <Button
+          title="Send message"
+          onPress={this.onSendMessage}
+        />
+        <Button
+          title="Receive message"
+          onPress={this.onReceiveMessage}
         />
       </View>
     );
