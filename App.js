@@ -22,7 +22,7 @@ import {
   subscribeOnConnectionInfoUpdates,
   subscribeOnPeersUpdates,
   connect,
-  disconnect,
+  cancelConnect,
   createGroup,
   removeGroup,
   getAvailablePeers,
@@ -73,9 +73,9 @@ export default class App extends Component<Props> {
           .catch(err => console.error('Something gone wrong. Details: ', err));
   };
 
-  disconnectFromDevice = () => {
-      disconnect()
-          .then(() => console.log(2423435423, 'Successfully disconnected'))
+  onCancelConnect = () => {
+      cancelConnect()
+          .then(() => console.log(2423435423, 'Connection successfully canceled'))
           .catch(err => console.error(2423435423, 'Something gone wrong. Details: ', err));
   };
 
@@ -173,8 +173,8 @@ export default class App extends Component<Props> {
           onPress={this.connectToFirstDevice}
         />
         <Button
-          title="Disconnect"
-          onPress={this.disconnectFromDevice}
+          title="Cancel connect"
+          onPress={this.onCancelConnect}
         />
         <Button
           title="Create group"
