@@ -6,7 +6,7 @@
  * @flow
  */
 
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import {
   StyleSheet,
   View,
@@ -14,12 +14,13 @@ import {
 } from 'react-native';
 import {
   initialize,
-  isSuccessfulInitialize,
   startDiscoveringPeers,
   stopDiscoveringPeers,
   unsubscribeFromPeersUpdates,
+  unsubscribeFromThisDeviceChanged,
   unsubscribeFromConnectionInfoUpdates,
   subscribeOnConnectionInfoUpdates,
+  subscribeOnThisDeviceChanged,
   subscribeOnPeersUpdates,
   connect,
   cancelConnect,
@@ -29,60 +30,64 @@ import {
   sendFile,
   receiveFile,
   getConnectionInfo,
+  getGroupInfo,
   receiveMessage,
-  sendMessage
+  sendMessage,
 } from 'react-native-wifi-p2p';
 import { PermissionsAndroid } from 'react-native';
 
 type Props = {};
-export default class App extends Component<Props> {
+export default class App extends PureComponent<Props> {
   state = {
     devices: []
   };
 
-  componentDidMount() {
-    initialize();
-    isSuccessfulInitialize()
-        .then(status => console.log(status));
-    startDiscoveringPeers()
-        .then(() => console.log('Sucessfull'))
-        .catch(err => console.log(err));
+  async componentDidMount() {
+      try {
+          await initialize();
+          // since it's required in Android >= 6.0
+          const granted = await PermissionsAndroid.request(
+              PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
+              {
+                  'title': 'Access to wi-fi P2P mode',
+                  'message': 'ACCESS_COARSE_LOCATION'
+              }
+          );
 
-    subscribeOnPeersUpdates(({ devices }) => this.handleNewPeers(devices));
-    subscribeOnConnectionInfoUpdates(this.handleNewInfo);
-    // since it's required in Android >= 6.0
-    PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
-        {
-            'title': 'Access to wi-fi P2P mode',
-            'message': 'ACCESS_COARSE_LOCATION'
-        }
-    )
-        .then(granted => {
-            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                console.log("You can use the p2p mode")
-            } else {
-                console.log("Permission denied: p2p mode will not work")
-            }
-        });
+          console.log(granted === PermissionsAndroid.RESULTS.GRANTED ? "You can use the p2p mode" : "Permission denied: p2p mode will not work");
+
+          subscribeOnPeersUpdates(this.handleNewPeers);
+          subscribeOnConnectionInfoUpdates(this.handleNewInfo);
+          subscribeOnThisDeviceChanged(this.handleThisDeviceChanged);
+
+          const status = await startDiscoveringPeers();
+          console.log('startDiscoveringPeers status: ', status);
+      } catch (e) {
+          console.error(e);
+      }
   }
 
   componentWillUnmount() {
-    unsubscribeFromConnectionInfoUpdates((event) => console.log('unsubscribeFromConnectionInfoUpdates', event));
-    unsubscribeFromPeersUpdates((event) => console.log('unsubscribeFromPeersUpdates', event));
+    unsubscribeFromConnectionInfoUpdates(this.handleNewInfo);
+    unsubscribeFromPeersUpdates(this.handleNewPeers);
+    unsubscribeFromThisDeviceChanged(this.handleThisDeviceChanged)
   }
 
-  handleNewInfo = (info, sceondParam) => {
-    console.log(64646776467, info);
+  handleNewInfo = (info) => {
+    console.log('OnConnectionInfoUpdated', info);
   };
 
-  handleNewPeers = (peers) => {
-    console.log(754862162442324, peers);
-    this.setState({ devices: peers });
+  handleNewPeers = ({ devices }) => {
+    console.log('OnPeersUpdated', devices);
+    this.setState({ devices: devices });
+  };
+
+  handleThisDeviceChanged = (groupInfo) => {
+      console.log('THIS_DEVICE_CHANGED_ACTION', groupInfo);
   };
 
   connectToFirstDevice = () => {
-      console.log(this.state.devices[0]);
+      console.log('Connect to: ', this.state.devices[0]);
       connect(this.state.devices[0].deviceAddress)
           .then(() => console.log('Successfully connected'))
           .catch(err => console.error('Something gone wrong. Details: ', err));
@@ -90,8 +95,8 @@ export default class App extends Component<Props> {
 
   onCancelConnect = () => {
       cancelConnect()
-          .then(() => console.log(2423435423, 'Connection successfully canceled'))
-          .catch(err => console.error(2423435423, 'Something gone wrong. Details: ', err));
+          .then(() => console.log('cancelConnect', 'Connection successfully canceled'))
+          .catch(err => console.error('cancelConnect', 'Something gone wrong. Details: ', err));
   };
 
   onCreateGroup = () => {
@@ -114,7 +119,7 @@ export default class App extends Component<Props> {
 
   onStartInvestigate = () => {
       startDiscoveringPeers()
-          .then(status => console.log(33333333, `Status of discovering peers: ${status}`))
+          .then(status => console.log('startDiscoveringPeers', `Status of discovering peers: ${status}`))
           .catch(err => console.error(`Something is gone wrong. Maybe your WiFi is disabled? Error details: ${err}`));
   };
 
@@ -135,9 +140,9 @@ export default class App extends Component<Props> {
               )
           .then(granted => {
               if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                  console.log("You can use the camera")
+                  console.log("You can use the storage")
               } else {
-                  console.log("Camera permission denied")
+                  console.log("Storage permission denied")
               }
           })
           .then(() => {
@@ -151,7 +156,7 @@ export default class App extends Component<Props> {
           })
           .then(() => {
               return sendFile(url)
-                  .then(() => console.log('File sent successfully'))
+                  .then((metaInfo) => console.log('File sent successfully', metaInfo))
                   .catch(err => console.log('Error while file sending', err));
           })
           .catch(err => console.log(err));
@@ -167,9 +172,9 @@ export default class App extends Component<Props> {
       )
           .then(granted => {
               if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-                  console.log("You can use the camera")
+                  console.log("You can use the storage")
               } else {
-                  console.log("Camera permission denied")
+                  console.log("Storage permission denied")
               }
           })
           .then(() => {
@@ -191,7 +196,7 @@ export default class App extends Component<Props> {
 
   onSendMessage = () => {
       sendMessage("Hello world!")
-        .then(() => console.log('Message sent successfully'))
+        .then((metaInfo) => console.log('Message sent successfully', metaInfo))
         .catch(err => console.log('Error while message sending', err));
   };
 
@@ -203,7 +208,12 @@ export default class App extends Component<Props> {
 
   onGetConnectionInfo = () => {
     getConnectionInfo()
-        .then(info => console.log(info));
+        .then(info => console.log('getConnectionInfo', info));
+  };
+
+  onGetGroupInfo = () => {
+      getGroupInfo()
+        .then(info => console.log('getGroupInfo', info));
   };
 
   render() {
@@ -240,6 +250,10 @@ export default class App extends Component<Props> {
         <Button
           title="Get connection Info"
           onPress={this.onGetConnectionInfo}
+        />
+        <Button
+          title="Get group info"
+          onPress={this.onGetGroupInfo}
         />
         <Button
           title="Send file"
