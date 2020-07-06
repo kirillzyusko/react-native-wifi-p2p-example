@@ -50,6 +50,21 @@ export default class App extends Component<Props> {
 
     subscribeOnPeersUpdates(({ devices }) => this.handleNewPeers(devices));
     subscribeOnConnectionInfoUpdates(this.handleNewInfo);
+    // since it's required in Android >= 6.0
+    PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_COARSE_LOCATION,
+        {
+            'title': 'Access to wi-fi P2P mode',
+            'message': 'ACCESS_COARSE_LOCATION'
+        }
+    )
+        .then(granted => {
+            if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                console.log("You can use the p2p mode")
+            } else {
+                console.log("Permission denied: p2p mode will not work")
+            }
+        });
   }
 
   componentWillUnmount() {
@@ -143,9 +158,35 @@ export default class App extends Component<Props> {
   };
 
   onReceiveFile = () => {
-    receiveFile()
-        .then(() => console.log('File received successfully'))
-        .catch(err => console.log('Error while file receiving', err))
+      PermissionsAndroid.request(
+          PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+          {
+              'title': 'Access to read',
+              'message': 'READ_EXTERNAL_STORAGE'
+          }
+      )
+          .then(granted => {
+              if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+                  console.log("You can use the camera")
+              } else {
+                  console.log("Camera permission denied")
+              }
+          })
+          .then(() => {
+              return PermissionsAndroid.request(
+                  PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE,
+                  {
+                      'title': 'Access to write',
+                      'message': 'WRITE_EXTERNAL_STORAGE'
+                  }
+              )
+          })
+          .then(() => {
+              return receiveFile('/storage/emulated/0/Music/', 'BFMV:Letting You Go.mp3')
+                  .then(() => console.log('File received successfully'))
+                  .catch(err => console.log('Error while file receiving', err))
+          })
+          .catch(err => console.log(err));
   };
 
   onSendMessage = () => {
