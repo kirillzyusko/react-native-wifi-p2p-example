@@ -4788,9 +4788,9 @@ react-is@^16.12.0, react-is@^16.8.1, react-is@^16.8.4, react-is@^16.8.6:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
-"react-native-wifi-p2p@github:kirikzyusko1996/react-native-wifi-p2p#master":
-  version "2.0.2"
-  resolved "https://codeload.github.com/kirikzyusko1996/react-native-wifi-p2p/tar.gz/ed7fe609ecfad62835dc545d0734c761ad5ae9af"
+"react-native-wifi-p2p@git+https://github.com/kirikzyusko1996/react-native-wifi-p2p#master#59a3701 ":
+  version "3.0.0"
+  resolved "git+https://github.com/kirikzyusko1996/react-native-wifi-p2p#59a37012efb047fa4535d7e560cc2723a2917250"
 
 react-native@0.62.2:
   version "0.62.2"

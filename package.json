@@ -12,7 +12,7 @@
   "dependencies": {
     "react": "16.11.0",
     "react-native": "0.62.2",
-    "react-native-wifi-p2p": "github:kirikzyusko1996/react-native-wifi-p2p#master"
+    "react-native-wifi-p2p": "git+https://github.com/kirikzyusko1996/react-native-wifi-p2p#master#59a3701 "
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",
