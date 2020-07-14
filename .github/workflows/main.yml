@@ -10,7 +10,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Install npm dependencies
         run: |
-          npm ci
+          yarn install
   build-android:
     needs: install-and-test
     runs-on: ubuntu-latest
@@ -18,7 +18,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: Install npm dependencies
         run: |
-          npm ci
+          yarn install --frozen-lockfile
       - name: Build Android Release
         run: |
           cd android && ./gradlew assembleRelease
