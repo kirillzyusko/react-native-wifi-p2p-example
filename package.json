@@ -12,7 +12,7 @@
   "dependencies": {
     "react": "18.1.0",
     "react-native": "0.70.4",
-    "react-native-wifi-p2p": "https://github.com/kirillzyusko/react-native-wifi-p2p.git"
+    "react-native-wifi-p2p": "3.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

@@ -5457,9 +5457,10 @@ react-native-gradle-plugin@^0.70.3:
   resolved "https://registry.yarnpkg.com/react-native-gradle-plugin/-/react-native-gradle-plugin-0.70.3.tgz#cbcf0619cbfbddaa9128701aa2d7b4145f9c4fc8"
   integrity sha512-oOanj84fJEXUg9FoEAQomA8ISG+DVIrTZ3qF7m69VQUJyOGYyDZmPqKcjvRku4KXlEH6hWO9i4ACLzNBh8gC0A==
 
-"react-native-wifi-p2p@https://github.com/kirillzyusko/react-native-wifi-p2p.git":
+react-native-wifi-p2p@3.3.0:
   version "3.3.0"
-  resolved "https://github.com/kirillzyusko/react-native-wifi-p2p.git#eeed31b64fca92a0edd8bab5da62e601e9d17bbb"
+  resolved "https://registry.yarnpkg.com/react-native-wifi-p2p/-/react-native-wifi-p2p-3.3.0.tgz#add7c4fb868f136b26470cd8749fe0550360ce9c"
+  integrity sha512-/uqluFhgAxprAhv7hYFpjp4iMQOrxlZWGubuAosYWbAKAtm9JesP0RXBbGVO9yITBxK7UbbfrC3dOGd3g3REkg==
 
 react-native@0.70.4:
   version "0.70.4"
